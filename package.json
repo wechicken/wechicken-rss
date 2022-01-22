@@ -10,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.25.0",
     "dayjs": "^1.10.7",
     "dotenv": "^14.2.0",
     "fxjs": "^0.21.3",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "rss-to-json": "^2.0.2"
   }
 }
