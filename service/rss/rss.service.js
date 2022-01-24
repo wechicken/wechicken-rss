@@ -2,15 +2,34 @@ const F = require('fxjs/Strict');
 const { parse } = require('rss-to-json');
 
 const rssMapper = ({ blog_address, blog_type_id }) => ({
-  1: F.go(
-    blogAddress,
+  1: () => F.go(
+    blog_address,
     F.split('/'),
     F.last,
     F.replace('@', ''),
-    (userName) => `https://v2.velog.io/rss/{userName}`,
+    (userName) => `https://v2.velog.io/rss/${userName}`,
   ),
-  2: `${blogAddress}/feed`,
-  3: `${blogAddress}/feed`,
+  2: () => F.go(
+    blog_address,
+    F.split('/'),
+    (a) => F.insert(a.length - 1, 'feed', a),
+    F.join('/'),
+  ),
+  3: () => F.go(
+    blog_address,
+    () => `${blog_address}/feed`,
+  ),
+}[blog_type_id]);
+
+const HTTPS_REGEXP = /^(https:\/\/)/;
+const makeSureHttpsIncluded = (rssUrl) => F.go(
+  rssUrl,
+  F.ifElse(() => HTTPS_REGEXP.test(rssUrl), () => rssUrl, () => `https://${rssUrl}`),
+);
+
+const parseRSS = (rssUrl) => parse(rssUrl).catch(e => {
+  // console.log(e);
+  return null;
 });
 
 class RssService {
@@ -21,7 +40,7 @@ class RssService {
    * @returns string
    */
   static userBlogAddressRssMapper({ blog_address, blog_type_id }) {
-    return rssMapper({ blog_address, blog_type_id });
+    return rssMapper({ blog_address, blog_type_id })();
   }
 
   /**
@@ -32,9 +51,11 @@ class RssService {
    * @return Promise<RssBlog{ link, title, category, created }[]>
    */
   static rssReader(rssUrl) {
-    return F.go(
+    return F.goS(
       rssUrl,
-      parse,
+      makeSureHttpsIncluded,
+      parseRSS,
+      F.stopIf((a) => a === null, rssUrl),
       ({ items }) => items,
       F.map(({ link, title, category, created }) => ({ link, title, category, created })),
     );

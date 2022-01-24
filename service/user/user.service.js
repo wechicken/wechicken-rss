@@ -2,8 +2,8 @@ const UserRepository = require('./user.repository');
 
 class UserService {
 
-  constructor({ knex }) {
-    this.userRespository = new UserRepository({ knex });
+  constructor({ db }) {
+    this.userRespository = new UserRepository({ db });
   }
 
   getUserCount() {
@@ -14,6 +14,10 @@ class UserService {
   getUsers({ limit, offset }) {
     return this.userRespository.findList({ limit, offset });
   };
+
+  getTestUsers() {
+    return this.userRespository.findTestList();
+  }
 
 }
 
