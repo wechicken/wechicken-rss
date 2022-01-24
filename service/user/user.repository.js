@@ -4,7 +4,6 @@ class UserRepository {
   }
 
   count() {
-
     return this.db.QUERY`
         SELECT COUNT(id) as cnt
         FROM user
