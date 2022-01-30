@@ -39,8 +39,11 @@ class RssService {
    * @param blog_type_id
    * @returns string
    */
-  static userBlogAddressRssMapper({ blog_address, blog_type_id }) {
-    return rssMapper({ blog_address, blog_type_id })();
+  userBlogAddressRssMapper({ user_id, blog_address, blog_type_id }) {
+    return {
+      user_id,
+      rssUrl: rssMapper({ blog_address, blog_type_id })(),
+    };
   }
 
   /**
@@ -50,7 +53,7 @@ class RssService {
    * @param rssUrl
    * @return Promise<RssBlog{ link, title, category, created }[]>
    */
-  static rssReader(rssUrl) {
+  rssReader({ user_id, rssUrl }) {
     return F.goS(
       rssUrl,
       makeSureHttpsIncluded,
@@ -58,6 +61,10 @@ class RssService {
       F.stopIf((a) => a === null, rssUrl),
       ({ items }) => items,
       F.map(({ link, title, category, created }) => ({ link, title, category, created })),
+      (blogs) => ({
+        user_id,
+        blogs,
+      }),
     );
   }
 }

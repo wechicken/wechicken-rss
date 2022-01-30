@@ -10,7 +10,6 @@ class UserService {
     return this.userRespository.count();
   }
 
-
   getUsers({ limit, offset }) {
     return this.userRespository.findList({ limit, offset });
   };
