@@ -1,21 +1,23 @@
 const F = require('fxjs/Strict');
 const { parse } = require('rss-to-json');
+const { BLOG_TYPES_ENUM } = require('../constant');
+const { VELOG, MEDIUM, TISTORY } = BLOG_TYPES_ENUM;
 
 const rssMapper = ({ blog_address, blog_type_id }) => ({
-  1: () => F.go(
+  [VELOG]: () => F.go(
     blog_address,
     F.split('/'),
     F.last,
     F.replace('@', ''),
     (userName) => `https://v2.velog.io/rss/${userName}`,
   ),
-  2: () => F.go(
+  [MEDIUM]: () => F.go(
     blog_address,
     F.split('/'),
     (a) => F.insert(a.length - 1, 'feed', a),
     F.join('/'),
   ),
-  3: () => F.go(
+  [TISTORY]: () => F.go(
     blog_address,
     () => `${blog_address}/feed`,
   ),
