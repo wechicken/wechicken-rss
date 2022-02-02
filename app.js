@@ -34,7 +34,8 @@ const app = async () => {
       C.map(rssService.rssReader),
       F.reject(({ blogs }) => !F.isArray(blogs)),
       F.map(blogService.filterNewBlogs),
-      // F.each(({ blogs }) => F.map(F.log, blogs)),
+      F.tap(F.log),
+      F.each(({ blogs }) => F.map(F.log, blogs)),
       // F.map(({ blogs }) => blogs),
     );
 

@@ -17,19 +17,16 @@ class BlogService {
   };
 
   async filterNewBlogs({ user_id, blogs }) {
-    const theRecentBlog = await this.getRecentBlog({ user_id });
-    console.log(theRecentBlog);
+    const [theRecentBlog] = await this.getRecentBlog({ user_id });
 
-    return F.go(
+    return F.goS(
       blogs,
-      // F.filter(({ created }) => created < theRecentBlog.written_date),
-      F.each(({ created }) => {
-        F.log(created);
-        F.log(dayjs(created).format('YYYY-MM-DD'));
-      }),
-      (newBlogs) => ({
+      F.stopIf(() => !theRecentBlog, { user_id, blogs }),
+      F.filter(({ created }) => dayjs(created).isAfter(theRecentBlog.written_date)),
+      F.reject(({ title }) => title === theRecentBlog.title),
+      (filteredNewBlogs) => ({
         user_id,
-        blogs: newBlogs,
+        blogs: filteredNewBlogs,
       }),
     );
   }

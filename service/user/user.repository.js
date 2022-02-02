@@ -26,7 +26,7 @@ class UserRepository {
                blog_address,
                blog_type_id
         FROM user
-        WHERE blog_type_id = 1
+        WHERE blog_type_id = 2
         LIMIT 10
     `;
 
