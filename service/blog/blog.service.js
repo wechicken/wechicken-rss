@@ -5,6 +5,7 @@ const dayjs = require('dayjs');
 class BlogService {
   constructor({ db }) {
     this.blogRepository = new BlogRepository({ db });
+
     this.filterNewBlogs = this.filterNewBlogs.bind(this);
   }
 
@@ -12,7 +13,7 @@ class BlogService {
     return this.blogRepository.insert({ title, link, written_date, user_id });
   }
 
-  getRecentBlog = ({ user_id }) => {
+  getRecentBlog({ user_id }) {
     return this.blogRepository.findRecentItem({ user_id });
   };
 
