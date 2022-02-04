@@ -1,15 +1,15 @@
 class BlogRepository {
   constructor({ db }) {
     this.db = db;
+
+    this.bulkInsert = this.bulkInsert.bind(this);
+    this.findRecentItem = this.findRecentItem.bind(this);
   }
 
-  insert({ title, link, written_date, user_id }) {
+  bulkInsert(blogs) {
     return this.db.QUERY`
-        INSERT INTO blog (title,
-                          link,
-                          written_date,
-                          user_id)
-        VALUES (title, link, written_date, user_id)
+        INSERT INTO blog
+            ${this.db.VALUES(blogs)};
     `;
   }
 

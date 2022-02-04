@@ -37,9 +37,10 @@ const parseRSS = (rssUrl) => parse(rssUrl).catch(e => {
 class RssService {
   /**
    * blog 서비스 마다의 RSS 주소를 맵핑한다.
-   * @param blog_address
-   * @param blog_type_id
-   * @returns string
+   * @param {string} user_id
+   * @param {string} blog_address
+   * @param {string} blog_type_id
+   * @returns {Object} { user_id, rssUrl }
    */
   userBlogAddressRssMapper({ user_id, blog_address, blog_type_id }) {
     return {
@@ -52,8 +53,9 @@ class RssService {
    * rss 주소가 인풋으로 넘어오면
    * rss API 를 통해 XML 을 얻어온다.
    * XML 로 부터 블로그 엔티티를 뽑아낸다.
-   * @param rssUrl
-   * @return Promise<RssBlog{ link, title, category, created }[]>
+   * @param {string} user_id
+   * @param {string} rssUrl
+   * @return {Promise<{user_id: string, blogs: BLOG[]}[]>} { user_id, blogs: {link, title, category, created}[] }
    */
   rssReader({ user_id, rssUrl }) {
     return F.goS(

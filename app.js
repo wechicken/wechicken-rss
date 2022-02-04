@@ -18,6 +18,7 @@ const app = async () => {
       password: 'password',
       database: 'wechicken',
     });
+    db.FxSQL_DEBUG = true;
 
     const userService = new UserService({ db });
     const rssService = new RssService();
@@ -26,7 +27,7 @@ const app = async () => {
     const [userCount] = await userService.getUserCount();
     console.log(userCount);
 
-    await F.go(
+    await F.goS(
       // userService.getUsers({ limit: 10, offset: 0 }),
       userService.getTestUsers(),
       F.filter(({ blog_type_id }) => F.includes(blog_type_id, ALLOWED_BLOG_TYPE_ID)),
@@ -34,9 +35,9 @@ const app = async () => {
       C.map(rssService.rssReader),
       F.reject(({ blogs }) => !F.isArray(blogs)),
       F.map(blogService.filterNewBlogs),
-      F.tap(F.log),
+      F.reject(({ blogs }) => blogs.length === 0),
       F.each(({ blogs }) => F.map(F.log, blogs)),
-      // F.map(({ blogs }) => blogs),
+      F.map(blogService.saveBlogs),
     );
 
 

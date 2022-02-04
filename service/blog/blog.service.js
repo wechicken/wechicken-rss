@@ -6,11 +6,20 @@ class BlogService {
   constructor({ db }) {
     this.blogRepository = new BlogRepository({ db });
 
+    this.saveBlogs = this.saveBlogs.bind(this);
+    this.getRecentBlog = this.getRecentBlog.bind(this);
     this.filterNewBlogs = this.filterNewBlogs.bind(this);
   }
 
-  saveBlog({ title, link, written_date, user_id }) {
-    return this.blogRepository.insert({ title, link, written_date, user_id });
+  async saveBlogs({ user_id, blogs }) {
+    await F.go(
+      blogs,
+      F.map((b) => ({ user_id, ...b })),
+      F.map(F.omit(['category'])),
+      F.map(({ created, ...rest }) => ({ written_date: dayjs(created).format('YYYY-MM-DD'), ...rest })),
+      this.blogRepository.bulkInsert,
+      () => console.log(`User: ${user_id} new blogs saved successfully`),
+    );
   }
 
   getRecentBlog({ user_id }) {
