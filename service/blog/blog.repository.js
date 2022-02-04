@@ -7,9 +7,11 @@ class BlogRepository {
   }
 
   bulkInsert(blogs) {
-    return this.db.QUERY`
+    const { QUERY, VALUES } = this.db;
+
+    return QUERY`
         INSERT INTO blog
-            ${this.db.VALUES(blogs)};
+            ${VALUES(blogs)}
     `;
   }
 
