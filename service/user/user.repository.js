@@ -10,13 +10,12 @@ class UserRepository {
     `;
   }
 
-  findList({ limit, offset }) {
+  findList() {
     return this.db.QUERY`
         SELECT id AS user_id,
                blog_address,
                blog_type_id
         FROM user
-        LIMIT ${limit} OFFSET ${offset}
     `;
   }
 
@@ -27,7 +26,6 @@ class UserRepository {
                blog_type_id
         FROM user
         WHERE blog_type_id = 2
-        LIMIT 10
     `;
 
   }

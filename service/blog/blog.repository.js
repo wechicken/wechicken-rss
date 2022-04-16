@@ -19,11 +19,11 @@ class BlogRepository {
     return this.db.QUERY`
         SELECT id AS blog_id,
                title,
-               written_date,
+               written_datetime,
                created_at
         FROM blog
         WHERE user_id = ${user_id}
-        ORDER BY written_date DESC
+        ORDER BY written_datetime DESC
         LIMIT 1
     `;
   }

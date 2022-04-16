@@ -65,6 +65,7 @@ class RssService {
       F.stopIf((a) => a === null, rssUrl),
       ({ items }) => items,
       F.map(({ link, title, category, created }) => ({ link, title, category, created })),
+      F.filter(({ title }) => title),
       (blogs) => ({
         user_id,
         blogs,

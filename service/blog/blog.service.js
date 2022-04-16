@@ -16,7 +16,7 @@ class BlogService {
       blogs,
       F.map((b) => ({ user_id, ...b })),
       F.map(F.omit(['category'])),
-      F.map(({ created, ...rest }) => ({ written_date: dayjs(created).format('YYYY-MM-DD'), ...rest })),
+      F.map(({ created, ...rest }) => ({ written_datetime: dayjs(created).format('YYYY-MM-DD HH:mm:ss'), ...rest })),
       this.blogRepository.bulkInsert,
       () => console.log(`User: ${user_id} new blogs saved successfully`),
     );
@@ -32,7 +32,7 @@ class BlogService {
     return F.goS(
       blogs,
       F.stopIf(() => !theRecentBlog, { user_id, blogs }),
-      F.filter(({ created }) => dayjs(created).isAfter(theRecentBlog.written_date)),
+      F.filter(({ created }) => dayjs(created).isAfter(theRecentBlog.written_datetime)),
       F.reject(({ title }) => title === theRecentBlog.title),
       (filteredNewBlogs) => ({
         user_id,
